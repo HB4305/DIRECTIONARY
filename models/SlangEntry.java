@@ -34,9 +34,4 @@ public class SlangEntry implements Serializable {
     public int hashCode() {
         return Objects.hash(slang);
     }
-
-    @Override
-    public String toString() {
-        return slang + " : " + String.join(", ", meanings);
-    }
 }
