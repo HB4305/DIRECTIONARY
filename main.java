@@ -2,7 +2,7 @@ import services.dataaccess.TextDao;
 import models.SlangEntry;
 import java.util.List;
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         TextDao dao = new TextDao();
         List<SlangEntry> allSlangs = dao.getAll();
