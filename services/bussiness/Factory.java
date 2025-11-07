@@ -13,6 +13,8 @@ public class Factory {
     private void config() {
         // Initialize services and add them to the _servicesForType map
         _servicesForType.put("SlangDictionary", new SlangDictionary());
+        _servicesForType.put("SlangOfTheDayServices", new SlangOfTheDayServices());
+        _servicesForType.put("SlangParser", new SlangParser());
     }
 
     public static Factory getInstance() {
