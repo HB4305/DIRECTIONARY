@@ -40,7 +40,7 @@ public class TextDao implements IDao<SlangEntry> {
         try (BufferedReader reader = new BufferedReader(new FileReader(sourceFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String trimmedLine = line.trim();
+                String trimmedLine = cleanOrphanLine(line);
 
                 if (trimmedLine.isEmpty() || trimmedLine.startsWith("#") || trimmedLine.startsWith("Slang`Meaning") || trimmedLine.startsWith("Slag`Meaning")) {
                     lastSlangKey = null;

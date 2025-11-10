@@ -19,6 +19,16 @@ public class SlangDictionary {
         history = new ArrayList<>();
     }
 
+    public SlangDictionary(List<SlangEntry> entries) {
+        this();
+        for (SlangEntry entry : entries) {
+            slangMap.put(entry.getSlang(), entry);
+            for (String meaning : entry.getMeanings()) {
+                meaningsMap.computeIfAbsent(meaning, k -> new ArrayList<>()).add(entry.getSlang());
+            }
+        }
+    }
+
     public SlangEntry findSlang(String slang) {
         // Implementation goes here
         SlangEntry entry = slangMap.get(slang);
