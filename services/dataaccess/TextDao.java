@@ -40,16 +40,16 @@ public class TextDao implements IDao<SlangEntry> {
         try (BufferedReader reader = new BufferedReader(new FileReader(sourceFilePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String trimmedLine = cleanOrphanLine(line);
+                String trimmedLine = line.trim();
 
-                if (trimmedLine.isEmpty() || trimmedLine.startsWith("#") || trimmedLine.startsWith("Slang`Meaning") || trimmedLine.startsWith("Slag`Meaning")) {
+                if (trimmedLine.isEmpty() || trimmedLine.startsWith("Slag`Meaning")) {
                     lastSlangKey = null;
                     continue;
                 }
 
                 if (trimmedLine.contains(SlangParser.SLANG_MEANING_DELIMITER)) {
                     SlangEntry newEntry = slangParser.parse(trimmedLine);
-                    
+
                     if (newEntry == null) {
                         lastSlangKey = null;
                         continue;
@@ -58,48 +58,48 @@ public class TextDao implements IDao<SlangEntry> {
                     String slangKey = newEntry.getSlang();
                     if (slangMap.containsKey(slangKey)) {
                         // === THAY ĐỔI LỚN 1 (Gộp key trùng) ===
-                        
+
                         // Lấy entry cũ
                         SlangEntry existingEntry = slangMap.get(slangKey);
-                        
+
                         // Tạo một List MỚI (mutable) từ list cũ (immutable)
                         List<String> combinedMeanings = new ArrayList<>(existingEntry.getMeanings());
-                        
+
                         // Thêm các nghĩa mới vào list MỚI
                         for (String meaning : newEntry.getMeanings()) {
                             if (!combinedMeanings.contains(meaning)) {
                                 combinedMeanings.add(meaning);
                             }
                         }
-                        
+
                         // Tạo một SlangEntry MỚI với danh sách nghĩa đã gộp
                         SlangEntry updatedEntry = new SlangEntry(slangKey, combinedMeanings);
-                        
+
                         // Thay thế entry cũ trong Map
                         slangMap.put(slangKey, updatedEntry);
-                        
+
                     } else {
                         slangMap.put(slangKey, newEntry);
                     }
                     lastSlangKey = slangKey;
-                
+
                 } else if (lastSlangKey != null) {
                     SlangEntry existingEntry = slangMap.get(lastSlangKey);
                     if (existingEntry != null) {
-                        
+
                         // === THAY ĐỔI LỚN 2 (Gộp dòng mồ côi) ===
                         String newMeaning = cleanOrphanLine(trimmedLine);
-                        
+
                         if (!newMeaning.isEmpty() && !existingEntry.getMeanings().contains(newMeaning)) {
                             // Tạo List MỚI (mutable) từ list cũ (immutable)
                             List<String> combinedMeanings = new ArrayList<>(existingEntry.getMeanings());
-                            
+
                             // Thêm nghĩa mới vào
                             combinedMeanings.add(newMeaning);
-                            
+
                             // Tạo SlangEntry MỚI
                             SlangEntry updatedEntry = new SlangEntry(existingEntry.getSlang(), combinedMeanings);
-                            
+
                             // Thay thế trong Map
                             slangMap.put(lastSlangKey, updatedEntry);
                         }
@@ -134,11 +134,11 @@ public class TextDao implements IDao<SlangEntry> {
     @Override
     public void save(SlangEntry entity) {
         List<SlangEntry> entries = getAll();
-        
+
         boolean updated = false;
         for (int i = 0; i < entries.size(); i++) {
             // Giả sử SlangEntry có getSlang()
-            if (entries.get(i).getSlang().equals(entity.getSlang())) { 
+            if (entries.get(i).getSlang().equals(entity.getSlang())) {
                 entries.set(i, entity);
                 updated = true;
                 break;
@@ -147,7 +147,7 @@ public class TextDao implements IDao<SlangEntry> {
         if (!updated) {
             entries.add(entity);
         }
-        
+
         saveAll(entries);
     }
 
