@@ -165,4 +165,13 @@ public class TextDao implements IDao<SlangEntry> {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<SlangEntry> resetData() {
+        File dataFile = new File(dataFilePath);
+        if (dataFile.exists()) {
+            dataFile.delete();
+        }
+        return getAll();
+    }
 }
