@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class SlangOfTheDayServices {
-    private static final String FILE_PATH = "...data/slang_of_the_day.txt";
+    private static final String FILE_PATH = "data/slang_of_the_day.txt";
 
     public SlangEntry getSlangOfTheDay(SlangDictionary dictionary) {
         LocalDate today = LocalDate.now();
-        
+
         // 1. Đọc dữ liệu từ file
         String[] data = readDataFromFile(); // data[0] = date, data[1] = slang
 
@@ -41,13 +41,14 @@ public class SlangOfTheDayServices {
 
         // 4. Lưu slang mới và ngày hôm nay vào file
         writeDataToFile(today.toString(), newSlang.getSlang());
-        
+
         // 5. Trả về slang mới
         return newSlang;
     }
 
     /**
      * Helper: Đọc dữ liệu từ file
+     * 
      * @return String array [date, slang], hoặc null nếu lỗi
      */
     private String[] readDataFromFile() {
@@ -56,7 +57,7 @@ public class SlangOfTheDayServices {
             String slang = reader.readLine();
 
             if (date != null && slang != null) {
-                return new String[]{date, slang};
+                return new String[] { date, slang };
             }
         } catch (IOException e) {
             // Không tìm thấy file (lần chạy đầu) hoặc lỗi đọc,

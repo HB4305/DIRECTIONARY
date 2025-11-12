@@ -21,7 +21,7 @@
             "type": "java",
             "name": "Launch Main (JavaFX)",
             "request": "launch",
-            "mainClass": "DIRECTIONARY.ui.Mainapp", // Hoặc DICTIONARY.ui.Mainapp nếu Mainapp nằm trong package DICTIONARY.ui
+            "mainClass": "ui.Mainapp", // Hoặc DICTIONARY.ui.Mainapp nếu Mainapp nằm trong package DICTIONARY.ui
             "vmArgs": "--module-path \"C:/javafx-sdk-25.0.0/lib\" --add-modules javafx.controls,javafx.fxml,javafx.graphics --enable-native-access=ALL-UNNAMED",
             "projectName": "DIRECTIONARY" // Đảm bảo tên dự án chính xác
         }

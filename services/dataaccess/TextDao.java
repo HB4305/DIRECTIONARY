@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import models.SlangEntry; // Đảm bảo SlangEntry có constructor (String, List<String>)
+import models.SlangEntry;
 import services.bussiness.IParsable;
 import services.bussiness.SlangParser;
 
@@ -57,7 +57,6 @@ public class TextDao implements IDao<SlangEntry> {
 
                     String slangKey = newEntry.getSlang();
                     if (slangMap.containsKey(slangKey)) {
-                        // === THAY ĐỔI LỚN 1 (Gộp key trùng) ===
 
                         // Lấy entry cũ
                         SlangEntry existingEntry = slangMap.get(slangKey);
@@ -87,7 +86,6 @@ public class TextDao implements IDao<SlangEntry> {
                     SlangEntry existingEntry = slangMap.get(lastSlangKey);
                     if (existingEntry != null) {
 
-                        // === THAY ĐỔI LỚN 2 (Gộp dòng mồ côi) ===
                         String newMeaning = cleanOrphanLine(trimmedLine);
 
                         if (!newMeaning.isEmpty() && !existingEntry.getMeanings().contains(newMeaning)) {
@@ -173,5 +171,12 @@ public class TextDao implements IDao<SlangEntry> {
             dataFile.delete();
         }
         return getAll();
+    }
+
+    @Override
+    public void delete(SlangEntry entity) {
+        List<SlangEntry> entries = getAll();
+        entries.removeIf(e -> e.getSlang().equals(entity.getSlang()));
+        saveAll(entries);
     }
 }

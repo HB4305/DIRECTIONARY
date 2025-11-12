@@ -11,6 +11,7 @@ import models.SlangEntry;
 import services.bussiness.Quiz;
 import services.bussiness.SlangDictionary;
 import services.dataaccess.TextDao;
+import services.bussiness.SlangOfTheDayServices;
 
 import java.util.*;
 
@@ -21,6 +22,7 @@ public class Mainapp extends Application {
     private Quiz quiz;
     private StackPane rootPane;
     private VBox mainContent;
+    private SlangOfTheDayServices SLOD;
 
     public static void main(String[] args) {
         launch(args);
@@ -33,6 +35,7 @@ public class Mainapp extends Application {
         allSlangs = dao.getAll();
         dictionary = new SlangDictionary(allSlangs);
         quiz = new Quiz(allSlangs);
+        SLOD = new SlangOfTheDayServices();
 
         // Initialize UI
         primaryStage.setTitle("Slang Dictionary Application");
@@ -77,28 +80,27 @@ public class Mainapp extends Application {
         Label title = new Label("📚 SLANG DICTIONARY");
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;");
 
-        Label infoLabel = new Label("Total entries: " + allSlangs.size());
-        infoLabel.setStyle("-fx-font-size: 12; -fx-text-fill: #ecf0f1;");
-
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        header.getChildren().addAll(title, spacer, infoLabel);
+        header.getChildren().addAll(title, spacer);
         return header;
     }
 
     private VBox createMainMenuPanel() {
         VBox menuPanel = new VBox(15);
-        menuPanel.setPadding(new Insets(30));
+        menuPanel.setPadding(new Insets(20));
         menuPanel.setAlignment(Pos.TOP_CENTER);
         menuPanel.setStyle("-fx-font-size: 14;");
 
-        Label menuTitle = new Label("MAIN MENU");
+        Label menuTitle = new Label("MENU");
         menuTitle.setStyle("-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        VBox buttonsBox = new VBox(10);
-        buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.setPadding(new Insets(20));
+        GridPane buttonsGrid = new GridPane();
+        buttonsGrid.setHgap(10);
+        buttonsGrid.setVgap(8);
+        buttonsGrid.setPadding(new Insets(10));
+        buttonsGrid.setAlignment(Pos.CENTER);
 
         // Create menu buttons with proper styling
         Button btn1 = createMenuButton("🔍 Search by Slang Word", () -> showSearchSlangPanel());
@@ -112,25 +114,32 @@ public class Mainapp extends Application {
         Button btn9 = createMenuButton("❓ Quiz: Guess Meaning", () -> showQuiz1Panel());
         Button btn10 = createMenuButton("❓ Quiz: Guess Slang", () -> showQuiz2Panel());
 
-        buttonsBox.getChildren().addAll(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10);
+        // Add buttons to grid in 2 columns
+        buttonsGrid.add(btn1, 0, 0);
+        buttonsGrid.add(btn2, 1, 0);
+        buttonsGrid.add(btn3, 0, 1);
+        buttonsGrid.add(btn4, 1, 1);
+        buttonsGrid.add(btn5, 0, 2);
+        buttonsGrid.add(btn6, 1, 2);
+        buttonsGrid.add(btn7, 0, 3);
+        buttonsGrid.add(btn8, 1, 3);
+        buttonsGrid.add(btn9, 0, 4);
+        buttonsGrid.add(btn10, 1, 4);
 
-        ScrollPane scrollPane = new ScrollPane(buttonsBox);
-        scrollPane.setFitToWidth(true);
-
-        menuPanel.getChildren().addAll(menuTitle, scrollPane);
+        menuPanel.getChildren().addAll(menuTitle, buttonsGrid);
         return menuPanel;
     }
 
     private Button createMenuButton(String text, Runnable action) {
         Button btn = new Button(text);
-        btn.setStyle("-fx-font-size: 14; -fx-padding: 12 20; -fx-background-color: #3498db; " +
+        btn.setStyle("-fx-font-size: 12; -fx-padding: 10 15; -fx-background-color: #3498db; " +
                 "-fx-text-fill: white; -fx-border-radius: 5; -fx-cursor: hand;");
-        btn.setMinWidth(250);
+        btn.setMinWidth(200);
         btn.setOnMouseEntered(
-                e -> btn.setStyle("-fx-font-size: 14; -fx-padding: 12 20; -fx-background-color: #2980b9; " +
+                e -> btn.setStyle("-fx-font-size: 12; -fx-padding: 10 15; -fx-background-color: #2980b9; " +
                         "-fx-text-fill: white; -fx-border-radius: 5; -fx-cursor: hand;"));
         btn.setOnMouseExited(
-                e -> btn.setStyle("-fx-font-size: 14; -fx-padding: 12 20; -fx-background-color: #3498db; " +
+                e -> btn.setStyle("-fx-font-size: 12; -fx-padding: 10 15; -fx-background-color: #3498db; " +
                         "-fx-text-fill: white; -fx-border-radius: 5; -fx-cursor: hand;"));
         btn.setOnAction(e -> action.run());
         return btn;
@@ -186,8 +195,7 @@ public class Mainapp extends Application {
 
             SlangEntry entry = dictionary.findSlang(slang);
             if (entry != null) {
-                resultArea.setText("Slang: " + entry.getSlang() + "\n\nMeanings:\n" +
-                        String.join("\n", entry.getMeanings()));
+                resultArea.setText(String.join("\n", entry.getMeanings()));
             } else {
                 resultArea.setText("Slang '" + slang + "' not found in dictionary.");
             }
@@ -224,26 +232,21 @@ public class Mainapp extends Application {
         resultArea.setPrefHeight(300);
 
         searchBtn.setOnAction(e -> {
-            String keyword = searchField.getText().trim().toLowerCase();
+            String keyword = searchField.getText().trim();
             if (keyword.isEmpty()) {
                 resultArea.setText("Please enter a keyword.");
                 return;
             }
 
-            List<String> results = new ArrayList<>();
-            for (SlangEntry entry : allSlangs) {
-                for (String meaning : entry.getMeanings()) {
-                    if (meaning.toLowerCase().contains(keyword)) {
-                        results.add("• " + entry.getSlang() + ": " + meaning);
-                        break;
-                    }
+            List<String> results = dictionary.findMeaning(keyword);
+            if (!results.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (String res : results) {
+                    sb.append(res).append("\n");
                 }
-            }
-
-            if (results.isEmpty()) {
-                resultArea.setText("No slang words found with definition containing '" + keyword + "'.");
+                resultArea.setText(sb.toString());
             } else {
-                resultArea.setText(String.join("\n", results));
+                resultArea.setText("No slang words found with definition containing '" + keyword + "'.");
             }
         });
 
@@ -343,11 +346,14 @@ public class Mainapp extends Application {
                 // Show dialog for duplicate handling
                 showDuplicateDialog(slang, meaningsList, slangField, meaningArea, statusLabel);
             } else {
-                dictionary.addNewSlangWord(slang, meaningsList);
-                allSlangs.add(new SlangEntry(slang, meaningsList));
-                statusLabel.setText("✓ Slang word '" + slang + "' added successfully!");
-                slangField.clear();
-                meaningArea.clear();
+                if (dictionary.addNewSlangWord(slang, meaningsList)) {
+                    allSlangs.add(new SlangEntry(slang, meaningsList));
+                    statusLabel.setText("✓ Slang word '" + slang + "' added successfully!");
+                    slangField.clear();
+                    meaningArea.clear();
+                } else {
+                    statusLabel.setText("✗ Failed to add slang word '" + slang + "'.");
+                }
             }
         });
 
@@ -373,10 +379,13 @@ public class Mainapp extends Application {
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent()) {
             if (result.get() == overwrite) {
-                dictionary.overwriteSlangWord(slang, newMeanings);
-                statusLabel.setText("✓ Slang word '" + slang + "' overwritten successfully!");
-                slangField.clear();
-                meaningArea.clear();
+                if (dictionary.overwriteSlangWord(slang, newMeanings)) {
+                    statusLabel.setText("✓ Slang word '" + slang + "' overwritten successfully!");
+                    slangField.clear();
+                    meaningArea.clear();
+                } else {
+                    statusLabel.setText("✗ Failed to overwrite slang word '" + slang + "'.");
+                }
             } else if (result.get() == append) {
                 if (dictionary.appendDuplicateMeanings(slang, newMeanings)) {
                     statusLabel.setText("✓ New meanings added to '" + slang + "'!");
@@ -587,11 +596,9 @@ public class Mainapp extends Application {
 
             Optional<ButtonType> result = confirmDialog.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                dao = new TextDao();
-                allSlangs = dao.getAll();
+                allSlangs = dao.resetData();
                 dictionary = new SlangDictionary(allSlangs);
-                quiz = new Quiz(allSlangs);
-                statusLabel.setText("✓ Dictionary reset to original state!");
+                statusLabel.setText("✓ Dictionary has been reset to original state.");
             }
         });
 
@@ -617,7 +624,7 @@ public class Mainapp extends Application {
         contentBox.setStyle(
                 "-fx-border-color: #3498db; -fx-border-width: 2; -fx-border-radius: 5; -fx-background-color: #ecf0f1;");
 
-        SlangEntry randomSlang = dictionary.getRandomSlangWord();
+        SlangEntry randomSlang = SLOD.getSlangOfTheDay(dictionary);
 
         if (randomSlang == null) {
             Label noDataLabel = new Label("No slang words available.");

@@ -26,5 +26,8 @@ public interface IDao<T> {
 
     void saveAll(List<T> entities);
 
+    void delete(T entity);
+
     List<T> resetData();
+
 }

@@ -15,6 +15,7 @@ public class Quiz {
 
     /**
      * Initializes the Quiz with a list of all slang entries.
+     * 
      * @param slangDictionary The complete list of SlangEntry objects.
      */
     public Quiz(List<SlangEntry> slangDictionary) {
@@ -29,6 +30,7 @@ public class Quiz {
 
     /**
      * Generates a quiz question: Slang word, choose the correct definition.
+     * 
      * @return A QuizQuestion object containing the question and options.
      */
     public QuizQuestion generateSlangToMeaningQuiz() {
@@ -64,6 +66,7 @@ public class Quiz {
 
     /**
      * Generates a quiz question: Definition, choose the correct slang word.
+     * 
      * @return A QuizQuestion object containing the question and options.
      */
     public QuizQuestion generateMeaningToSlangQuiz() {
@@ -95,7 +98,6 @@ public class Quiz {
 
         return new QuizQuestion(questionText, shuffledOptions, correctAnswer);
     }
-
 
     /**
      * Helper method to get a random SlangEntry from the dictionary.
@@ -134,5 +136,4 @@ public class Quiz {
         }
     }
 
-    
 }

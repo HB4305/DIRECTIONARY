@@ -1,4 +1,5 @@
 package services.bussiness;
+
 import models.SlangEntry;
 import java.util.Map;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Random;
+import services.dataaccess.TextDao;
 
 public class SlangDictionary {
     private Map<String, SlangEntry> slangMap;
@@ -34,16 +36,16 @@ public class SlangDictionary {
         SlangEntry entry = slangMap.get(slang);
         if (entry != null) {
             history.add(slang);
-        } 
+        }
         return entry;
     }
 
     public List<String> findMeaning(String meaning) {
         List<String> slangs = meaningsMap.getOrDefault(meaning, new ArrayList<>());
-        if(!slangs.isEmpty()) {
-            history.addAll(slangs);
+        if (!slangs.isEmpty()) {
+            return slangs;
         }
-        return slangs;
+        return new ArrayList<>();
     }
 
     public List<String> getHistory() {
@@ -53,8 +55,8 @@ public class SlangDictionary {
     public boolean containsSlang(String slang) {
         return slangMap.containsKey(slang);
     }
-    
-    public void addNewSlangWord(String slang, List<String> meanings) {
+
+    public boolean addNewSlangWord(String slang, List<String> meanings) {
         // Giả định là slang này mới (UI đã kiểm tra)
         SlangEntry entry = new SlangEntry(slang, meanings);
         slangMap.put(slang, entry);
@@ -62,13 +64,16 @@ public class SlangDictionary {
         for (String meaning : meanings) {
             meaningsMap.computeIfAbsent(meaning, k -> new ArrayList<>()).add(slang);
         }
+        TextDao dao = new TextDao();
+        dao.save(entry);
+        return true;
     }
 
-
-    public void overwriteSlangWord(String slang, List<String> newMeanings) {
+    public boolean overwriteSlangWord(String slang, List<String> newMeanings) {
         // 1. Xóa các entry cũ trong meaningsMap
         SlangEntry oldEntry = slangMap.get(slang);
-        if (oldEntry == null) return; // Không có gì để ghi đè
+        if (oldEntry == null)
+            return false; // Không có gì để ghi đè
 
         List<String> oldMeanings = oldEntry.getMeanings();
         for (String oldMeaning : oldMeanings) {
@@ -89,12 +94,15 @@ public class SlangDictionary {
         for (String newMeaning : newMeanings) {
             meaningsMap.computeIfAbsent(newMeaning, k -> new ArrayList<>()).add(slang);
         }
+        TextDao dao = new TextDao();
+        dao.save(newEntry);
+        return true;
     }
-    
 
     public boolean appendDuplicateMeanings(String slang, List<String> newMeanings) {
         SlangEntry entry = slangMap.get(slang);
-        if (entry == null) return false; // Không có slang để thêm
+        if (entry == null)
+            return false; // Không có slang để thêm
 
         List<String> existingMeanings = entry.getMeanings();
         Set<String> meaningsToAdd = new HashSet<>(newMeanings);
@@ -108,21 +116,22 @@ public class SlangDictionary {
             existingMeanings.add(meaningToAdd);
             meaningsMap.computeIfAbsent(meaningToAdd, k -> new ArrayList<>()).add(slang);
         }
+        TextDao dao = new TextDao();
+        dao.save(entry);
         return true;
     }
 
     public boolean editSlangWord(String oldSlang, String newSlang, List<String> newMeanings) {
         if (!slangMap.containsKey(oldSlang)) {
-            return false; 
+            return false;
         }
 
-        
         if (!oldSlang.equals(newSlang) && slangMap.containsKey(newSlang)) {
-            return false; 
+            return false;
         }
 
         SlangEntry oldEntry = slangMap.remove(oldSlang);
-        
+
         List<String> oldMeanings = oldEntry.getMeanings();
         for (String oldMeaning : oldMeanings) {
             List<String> slangsForMeaning = meaningsMap.get(oldMeaning);
@@ -140,7 +149,8 @@ public class SlangDictionary {
         for (String newMeaning : newMeanings) {
             meaningsMap.computeIfAbsent(newMeaning, k -> new ArrayList<>()).add(newSlang);
         }
-
+        TextDao dao = new TextDao();
+        dao.save(newEntry);
         return true;
     }
 
@@ -160,6 +170,8 @@ public class SlangDictionary {
                 }
             }
         }
+        TextDao dao = new TextDao();
+        dao.delete(entry);
         return true;
     }
 
