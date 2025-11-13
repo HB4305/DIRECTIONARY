@@ -22,7 +22,7 @@ public class SlangDictionary {
     }
 
     public SlangDictionary(List<SlangEntry> entries) {
-        this();
+        this(); // Gọi constructor mặc định để khởi tạo các map và list
         for (SlangEntry entry : entries) {
             slangMap.put(entry.getSlang(), entry);
             for (String meaning : entry.getMeanings()) {
@@ -32,7 +32,6 @@ public class SlangDictionary {
     }
 
     public SlangEntry findSlang(String slang) {
-        // Implementation goes here
         SlangEntry entry = slangMap.get(slang);
         if (entry != null) {
             history.add(slang);
@@ -57,11 +56,11 @@ public class SlangDictionary {
     }
 
     public boolean addNewSlangWord(String slang, List<String> meanings) {
-        // Giả định là slang này mới (UI đã kiểm tra)
         SlangEntry entry = new SlangEntry(slang, meanings);
         slangMap.put(slang, entry);
 
         for (String meaning : meanings) {
+            // Thêm slang vào danh sách các slang tương ứng với nghĩa này trong meaningsMap
             meaningsMap.computeIfAbsent(meaning, k -> new ArrayList<>()).add(slang);
         }
         TextDao dao = new TextDao();
@@ -70,7 +69,7 @@ public class SlangDictionary {
     }
 
     public boolean overwriteSlangWord(String slang, List<String> newMeanings) {
-        // 1. Xóa các entry cũ trong meaningsMap
+        // Xóa entry cũ
         SlangEntry oldEntry = slangMap.get(slang);
         if (oldEntry == null)
             return false; // Không có gì để ghi đè
@@ -86,11 +85,11 @@ public class SlangDictionary {
             }
         }
 
-        // 2. Thêm entry mới
+        // Thêm entry mới
         SlangEntry newEntry = new SlangEntry(slang, newMeanings);
         slangMap.put(slang, newEntry); // Ghi đè trong slangMap
 
-        // 3. Cập nhật meaningsMap
+        // Cập nhật meaningsMap
         for (String newMeaning : newMeanings) {
             meaningsMap.computeIfAbsent(newMeaning, k -> new ArrayList<>()).add(slang);
         }
