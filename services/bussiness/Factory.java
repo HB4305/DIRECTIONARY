@@ -1,12 +1,14 @@
 package services.bussiness;
+
 import java.util.HashMap;
 import java.util.Map;
+
 public class Factory {
     private static Factory _instance = null;
     private static Map<String, Object> _servicesForType = new HashMap<>();
-    
+
     private Factory() {
-        // Private constructor to prevent instantiation
+        // tạo một config khi khởi tạo
         config();
     };
 
@@ -17,6 +19,7 @@ public class Factory {
         _servicesForType.put("SlangParser", new SlangParser());
     }
 
+    // mẫu singleton
     public static Factory getInstance() {
         if (_instance == null) {
             _instance = new Factory();

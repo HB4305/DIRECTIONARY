@@ -13,11 +13,6 @@ public class Quiz {
     private final Random random;
     private static final int NUMBER_OF_OPTIONS = 4;
 
-    /**
-     * Initializes the Quiz with a list of all slang entries.
-     * 
-     * @param slangDictionary The complete list of SlangEntry objects.
-     */
     public Quiz(List<SlangEntry> slangDictionary) {
         if (slangDictionary == null || slangDictionary.size() < NUMBER_OF_OPTIONS) {
             throw new IllegalArgumentException("Dictionary must contain at least " + NUMBER_OF_OPTIONS + " entries.");
@@ -26,31 +21,24 @@ public class Quiz {
         this.random = new Random();
     }
 
-    // --- Quiz Type 1: Slang -> Meaning (Question 10) ---
-
-    /**
-     * Generates a quiz question: Slang word, choose the correct definition.
-     * 
-     * @return A QuizQuestion object containing the question and options.
-     */
     public QuizQuestion generateSlangToMeaningQuiz() {
-        // 1. Select the correct SlangEntry
+        // Chọn một SlangEntry ngẫu nhiên làm câu hỏi
         SlangEntry correctEntry = getRandomEntry();
         String questionText = "What is the meaning of the slang word: **" + correctEntry.getSlang() + "**?";
 
-        // 2. Select the correct answer (a random meaning from the correct entry)
+        // Chọn đáp án đúng (một nghĩa ngẫu nhiên từ entry đúng)
         String correctAnswer = correctEntry.getMeanings().get(random.nextInt(correctEntry.getMeanings().size()));
 
-        // 3. Select unique wrong answers (distractors)
+        // Chọn các đáp án sai duy nhất (distractors)
         Set<String> options = new HashSet<>();
         options.add(correctAnswer);
 
-        // Get meanings from other, distinct slang words
+        // Lấy nghĩa từ các từ lóng khác, khác với từ đúng
         while (options.size() < NUMBER_OF_OPTIONS) {
             SlangEntry wrongEntry = getRandomEntry();
-            // Ensure the wrong entry is not the correct one and has meanings
+            // Đảm bảo nghĩa sai không phải từ đúng
             if (!wrongEntry.getSlang().equals(correctEntry.getSlang()) && !wrongEntry.getMeanings().isEmpty()) {
-                // Pick a random meaning from the wrong entry
+                // Chọn một nghĩa ngẫu nhiên từ entry sai
                 String wrongMeaning = wrongEntry.getMeanings().get(random.nextInt(wrongEntry.getMeanings().size()));
                 options.add(wrongMeaning);
             }
@@ -62,32 +50,25 @@ public class Quiz {
         return new QuizQuestion(questionText, shuffledOptions, correctAnswer);
     }
 
-    // --- Quiz Type 2: Meaning -> Slang (Question 11) ---
-
-    /**
-     * Generates a quiz question: Definition, choose the correct slang word.
-     * 
-     * @return A QuizQuestion object containing the question and options.
-     */
     public QuizQuestion generateMeaningToSlangQuiz() {
-        // 1. Select the correct SlangEntry
+        // Chọn một SlangEntry ngẫu nhiên làm câu hỏi
         SlangEntry correctEntry = getRandomEntry();
 
-        // 2. Select the correct answer (the slang word)
+        // Chọn đáp án đúng (từ lóng)
         String correctAnswer = correctEntry.getSlang();
 
-        // 3. Select the question (a random meaning from the correct entry)
+        // Chọn câu hỏi (một nghĩa ngẫu nhiên từ entry đúng)
         String meaningQuestion = correctEntry.getMeanings().get(random.nextInt(correctEntry.getMeanings().size()));
         String questionText = "Which slang word has the meaning: **" + meaningQuestion + "**?";
 
-        // 4. Select unique wrong answers (distractors)
+        // Chọn các đáp án sai duy nhất (distractors)
         Set<String> options = new HashSet<>();
         options.add(correctAnswer);
 
-        // Get slangs from other, distinct entries
+        // Lấy từ lóng từ các entry khác, khác với từ đúng
         while (options.size() < NUMBER_OF_OPTIONS) {
             SlangEntry wrongEntry = getRandomEntry();
-            // Ensure the wrong slang is not the correct one
+            // Đảm bảo từ lóng sai không phải từ đúng
             if (!wrongEntry.getSlang().equals(correctEntry.getSlang())) {
                 options.add(wrongEntry.getSlang());
             }
@@ -99,14 +80,12 @@ public class Quiz {
         return new QuizQuestion(questionText, shuffledOptions, correctAnswer);
     }
 
-    /**
-     * Helper method to get a random SlangEntry from the dictionary.
-     */
+    // Lấy một SlangEntry ngẫu nhiên từ từ điển
     private SlangEntry getRandomEntry() {
         return slangDictionary.get(random.nextInt(slangDictionary.size()));
     }
 
-    // --- Inner Class to hold a complete question ---
+    // --- Inner Class để đại diện cho câu hỏi quiz ---
 
     public static class QuizQuestion {
         private final String question;
