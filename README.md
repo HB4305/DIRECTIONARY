@@ -1,50 +1,41 @@
-# Ứng Dụng Từ Điển Tiếng Lóng (Slang Dictionary Application)
+# Slang Dictionary Application
 
 
-## 🏗️ Cấu Trúc Dự Án
+## Cấu Trúc Dự Án
 
 ```
 DICTIONARY/
-├── Main.java                          
-├── README.md                        
+├── Main.java
+├── README.md
+├── bin/
+├── lib/
 ├── data/
-│   ├── slang.txt                      # Dữ liệu từ lóng chính
-│   └── slang_of_the_day.txt          # Từ lóng của ngày
+│   ├── slang.txt
+│   └── slang_of_the_day.txt
 ├── models/
-│   └── SlangEntry.java                # Model đại diện cho một mục từ lóng
+│   └── SlangEntry.java
 ├── services/
-│   ├── bussiness/                     # Lớp business logic
-│   │   ├── SlangDictionary.java       # Quản lý từ điển
-│   │   ├── Quiz.java                  # Logic trò chơi quiz
-│   │   ├── SlangOfTheDayServices.java # Dịch vụ từ lóng của ngày
-│   │   ├── SlangParser.java           # Parser dữ liệu từ lóng
-│   │   ├── Factory.java               # Factory pattern
-│   │   └── IParsable.java             # Interface cho parser
-│   └── dataaccess/                    # Lớp truy cập dữ liệu
-│       ├── IDao.java                  # Interface DAO
-│       └── TextDao.java               # Triển khai DAO cho file text
+│   ├── bussiness/
+│   │   ├── SlangDictionary.java
+│   │   ├── Quiz.java
+│   │   ├── SlangOfTheDayServices.java
+│   │   ├── SlangParser.java
+│   │   ├── Factory.java
+│   │   └── IParsable.java
+│   └── dataaccess/
+│       ├── IDao.java
+│       ├── TextDao.java
+│       └── BinaryDao.java
 └── ui/
-    └── Mainapp.java                   # Ứng dụng giao diện chính (JavaFX)
+    └── Mainapp.java
 ```
 
 
 
-## 🚀 Cách Chạy Ứng Dụng
+## Cách Chạy Ứng Dụng
 
-### 1. Chạy từ Source Code
-
+### Terminal:
 
 ```bash
-javac Main.java
-java Main
+java --module-path "lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.media,javafx.graphics,jdk.jsobject,jfx.incubator.input,jfx.incubator.richtext --enable-native-access=ALL-UNNAMED --enable-native-access=javafx.graphics -cp DICTIONARY.jar Main
 ```
-
-### 2. Chạy từ JAR File
-
-```bash
-java --module-path "C:\javafx-sdk-25.0.1\lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.media,javafx.graphics,jdk.jsobject,jfx.incubator.input,jfx.incubator.richtext --enable-native-access=ALL-UNNAMED --enable-native-access=javafx.graphics -cp DICTIONARY.jar Main
-```
-
-
-
-
