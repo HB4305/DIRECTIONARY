@@ -223,18 +223,17 @@ public class Mainapp extends Application {
         searchField.setStyle("-fx-font-size: 12; -fx-padding: 8;");
         searchField.setPrefWidth(300);
 
-        Button searchBtn = new Button("Search");
-        searchBtn.setStyle("-fx-font-size: 12; -fx-padding: 8 25;");
-
         TextArea resultArea = new TextArea();
         resultArea.setEditable(false);
         resultArea.setWrapText(true);
         resultArea.setPrefHeight(300);
 
-        searchBtn.setOnAction(e -> {
-            String keyword = searchField.getText().trim();
+        // Auto-search on text change
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            String keyword = newValue.trim();
+
             if (keyword.isEmpty()) {
-                resultArea.setText("Please enter a keyword.");
+                resultArea.setText("");
                 return;
             }
 
@@ -250,7 +249,7 @@ public class Mainapp extends Application {
             }
         });
 
-        inputBox.getChildren().addAll(searchField, searchBtn);
+        inputBox.getChildren().add(searchField);
         panel.getChildren().addAll(inputBox, new Label("Results:"), resultArea);
         panel.getChildren().add(createBackButton());
 

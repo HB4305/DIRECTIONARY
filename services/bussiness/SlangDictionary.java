@@ -39,12 +39,20 @@ public class SlangDictionary {
         return entry;
     }
 
-    public List<String> findMeaning(String meaning) {
-        List<String> slangs = meaningsMap.getOrDefault(meaning, new ArrayList<>());
-        if (!slangs.isEmpty()) {
-            return slangs;
+    public List<String> findMeaning(String keyword) {
+        List<String> results = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+
+        for (SlangEntry entry : slangMap.values()) {
+            for (String meaning : entry.getMeanings()) {
+                if (meaning.toLowerCase().contains(lowerKeyword)) {
+                    results.add(entry.getSlang() + ": " + meaning);
+                    break; // Only add once per slang word
+                }
+            }
         }
-        return new ArrayList<>();
+
+        return results;
     }
 
     public List<String> getHistory() {
