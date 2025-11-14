@@ -11,7 +11,9 @@ import models.SlangEntry;
 import services.bussiness.Quiz;
 import services.bussiness.SlangDictionary;
 import services.dataaccess.TextDao;
+import services.dataaccess.BinaryDao;
 import services.bussiness.SlangOfTheDayServices;
+import java.io.File;
 
 import java.util.*;
 
@@ -32,7 +34,13 @@ public class Mainapp extends Application {
     public void start(Stage primaryStage) {
         // Initialize data
         dao = new TextDao();
-        allSlangs = dao.getAll();
+        BinaryDao binaryDao = new BinaryDao();
+        File dataFile = new File("data/slang.dat");
+        if (dataFile.exists()) {
+            allSlangs = binaryDao.getAll();
+        } else {
+            allSlangs = dao.getAll();
+        }
         dictionary = new SlangDictionary(allSlangs);
         quiz = new Quiz(allSlangs);
         SLOD = new SlangOfTheDayServices();

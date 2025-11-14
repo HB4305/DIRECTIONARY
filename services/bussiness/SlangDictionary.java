@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Random;
-import services.dataaccess.TextDao;
+import services.dataaccess.BinaryDao;
 
 public class SlangDictionary {
     private Map<String, SlangEntry> slangMap;
@@ -71,7 +71,7 @@ public class SlangDictionary {
             // Thêm slang vào danh sách các slang tương ứng với nghĩa này trong meaningsMap
             meaningsMap.computeIfAbsent(meaning, k -> new ArrayList<>()).add(slang);
         }
-        TextDao dao = new TextDao();
+        BinaryDao dao = new BinaryDao();
         dao.save(entry);
         return true;
     }
@@ -101,7 +101,7 @@ public class SlangDictionary {
         for (String newMeaning : newMeanings) {
             meaningsMap.computeIfAbsent(newMeaning, k -> new ArrayList<>()).add(slang);
         }
-        TextDao dao = new TextDao();
+        BinaryDao dao = new BinaryDao();
         dao.save(newEntry);
         return true;
     }
@@ -128,7 +128,7 @@ public class SlangDictionary {
         // ✓ Cập nhật lại entry với list mới
         entry.setMeanings(existingMeanings);
 
-        TextDao dao = new TextDao();
+        BinaryDao dao = new BinaryDao();
         dao.save(entry);
         return true;
     }
@@ -161,7 +161,7 @@ public class SlangDictionary {
         for (String newMeaning : newMeanings) {
             meaningsMap.computeIfAbsent(newMeaning, k -> new ArrayList<>()).add(newSlang);
         }
-        TextDao dao = new TextDao();
+        BinaryDao dao = new BinaryDao();
         dao.save(newEntry);
         return true;
     }
@@ -182,7 +182,7 @@ public class SlangDictionary {
                 }
             }
         }
-        TextDao dao = new TextDao();
+        BinaryDao dao = new BinaryDao();
         dao.delete(entry);
         return true;
     }
