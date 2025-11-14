@@ -29,13 +29,3 @@ DICTIONARY/
 └── ui/
     └── Mainapp.java
 ```
-
-
-
-## Cách Chạy Ứng Dụng
-
-### Terminal:
-
-```bash
-java --module-path "lib" --add-modules javafx.controls,javafx.fxml,javafx.web,javafx.swing,javafx.media,javafx.graphics,jdk.jsobject,jfx.incubator.input,jfx.incubator.richtext --enable-native-access=ALL-UNNAMED --enable-native-access=javafx.graphics -cp DICTIONARY.jar Main
-```
