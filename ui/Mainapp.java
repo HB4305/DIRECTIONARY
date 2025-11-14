@@ -645,11 +645,7 @@ public class Mainapp extends Application {
             contentBox.getChildren().addAll(slangLabel, meaningTitleLabel, meaningsBox);
         }
 
-        Button newBtn = new Button("Show Another");
-        newBtn.setStyle("-fx-font-size: 12; -fx-padding: 8 25;");
-        newBtn.setOnAction(e -> showSlangOfTheDayPanel());
-
-        panel.getChildren().addAll(contentBox, newBtn);
+        panel.getChildren().addAll(contentBox);
         panel.getChildren().add(createBackButton());
 
         updateMainContent(panel);
