@@ -45,7 +45,7 @@ public class SlangDictionary {
 
         for (SlangEntry entry : slangMap.values()) {
             for (String meaning : entry.getMeanings()) {
-                if (meaning.contains(keyword)) {
+                if (meaning.toLowerCase().contains(keyword.toLowerCase())) {
                     results.add(entry.getSlang() + ": " + meaning);
                     break; // Only add once per slang word
                 }
