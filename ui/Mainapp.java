@@ -338,11 +338,11 @@ public class Mainapp extends Application {
                 return;
             }
 
-            List<String> meaningsList = Arrays.asList(meanings.split("\n"));
+            // ✓ Thay đổi ở đây - dùng ArrayList thay vì Arrays.asList()
+            List<String> meaningsList = new ArrayList<>(Arrays.asList(meanings.split("\n")));
             meaningsList.replaceAll(String::trim);
 
             if (dictionary.containsSlang(slang)) {
-                // Show dialog for duplicate handling
                 showDuplicateDialog(slang, meaningsList, slangField, meaningArea, statusLabel);
             } else {
                 if (dictionary.addNewSlangWord(slang, meaningsList)) {
@@ -365,15 +365,15 @@ public class Mainapp extends Application {
     private void showDuplicateDialog(String slang, List<String> newMeanings,
             TextField slangField, TextArea meaningArea, Label statusLabel) {
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        dialog.setTitle("Duplicate Slang Word");
+        dialog.setTitle("Slang Word Exists");
         dialog.setHeaderText("Slang word '" + slang + "' already exists!");
-        dialog.setContentText("Choose an option:\n1. Overwrite existing meanings\n2. Append new meanings");
+        dialog.setContentText("Choose an option:\n1. Overwrite existing meanings\n2. Duplicate (append new meanings)");
 
         ButtonType overwrite = new ButtonType("Overwrite");
-        ButtonType append = new ButtonType("Append");
+        ButtonType duplicate = new ButtonType("Duplicate");
         ButtonType cancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-        dialog.getButtonTypes().setAll(overwrite, append, cancel);
+        dialog.getButtonTypes().setAll(overwrite, duplicate, cancel);
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent()) {
@@ -385,7 +385,7 @@ public class Mainapp extends Application {
                 } else {
                     statusLabel.setText("✗ Failed to overwrite slang word '" + slang + "'.");
                 }
-            } else if (result.get() == append) {
+            } else if (result.get() == duplicate) {
                 if (dictionary.appendDuplicateMeanings(slang, newMeanings)) {
                     statusLabel.setText("✓ New meanings added to '" + slang + "'!");
                     slangField.clear();
@@ -460,7 +460,7 @@ public class Mainapp extends Application {
                 return;
             }
 
-            List<String> meaningsList = Arrays.asList(meanings.split("\n"));
+            List<String> meaningsList = new ArrayList<>(Arrays.asList(meanings.split("\n")));
             meaningsList.replaceAll(String::trim);
 
             if (dictionary.editSlangWord(oldSlang, newSlang, meaningsList)) {

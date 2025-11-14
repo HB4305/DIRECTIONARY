@@ -26,6 +26,10 @@ public class SlangEntry implements Serializable {
         return Collections.unmodifiableList(meanings);
     }
 
+    public void setMeanings(List<String> newMeanings) {
+        this.meanings = new ArrayList<>(newMeanings);
+    }
+
     @Override
     // Hàm này dùng để so sánh 2 SlangEntry có cùng slang và cùng meanings hay không
     public boolean equals(Object obj) {

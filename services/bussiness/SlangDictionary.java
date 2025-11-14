@@ -109,20 +109,25 @@ public class SlangDictionary {
     public boolean appendDuplicateMeanings(String slang, List<String> newMeanings) {
         SlangEntry entry = slangMap.get(slang);
         if (entry == null)
-            return false; // Không có slang để thêm
+            return false;
 
-        List<String> existingMeanings = entry.getMeanings();
+        // ✓ Thay đổi: Tạo ArrayList mới thay vì dùng list từ getMeanings()
+        List<String> existingMeanings = new ArrayList<>(entry.getMeanings());
         Set<String> meaningsToAdd = new HashSet<>(newMeanings);
-        meaningsToAdd.removeAll(existingMeanings); // Lọc ra ý nghĩa mới thực sự
+        meaningsToAdd.removeAll(existingMeanings);
 
         if (meaningsToAdd.isEmpty()) {
-            return false; // Không có gì mới để thêm
+            return false;
         }
 
         for (String meaningToAdd : meaningsToAdd) {
             existingMeanings.add(meaningToAdd);
             meaningsMap.computeIfAbsent(meaningToAdd, k -> new ArrayList<>()).add(slang);
         }
+
+        // ✓ Cập nhật lại entry với list mới
+        entry.setMeanings(existingMeanings);
+
         TextDao dao = new TextDao();
         dao.save(entry);
         return true;
