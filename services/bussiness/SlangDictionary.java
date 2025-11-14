@@ -34,18 +34,18 @@ public class SlangDictionary {
     public SlangEntry findSlang(String slang) {
         SlangEntry entry = slangMap.get(slang);
         if (entry != null) {
-            history.add(slang);
+            if (!history.contains(slang))
+                history.add(slang);
         }
         return entry;
     }
 
     public List<String> findMeaning(String keyword) {
         List<String> results = new ArrayList<>();
-        String lowerKeyword = keyword.toLowerCase();
 
         for (SlangEntry entry : slangMap.values()) {
             for (String meaning : entry.getMeanings()) {
-                if (meaning.toLowerCase().contains(lowerKeyword)) {
+                if (meaning.contains(keyword)) {
                     results.add(entry.getSlang() + ": " + meaning);
                     break; // Only add once per slang word
                 }
