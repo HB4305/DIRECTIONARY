@@ -6,9 +6,6 @@
 ```
 DICTIONARY/
 ├── Main.java
-├── README.md
-├── bin/
-├── lib/
 ├── data/
 │   ├── slang.txt
 │   └── slang_of_the_day.txt
